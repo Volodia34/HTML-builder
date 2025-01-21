@@ -5,15 +5,27 @@ async function copyDir() {
   const source = path.join(__dirname, 'files');
   const destination = path.join(__dirname, 'files-copy');
 
-  await fs.mkdir(destination, { recursive: true });
+  try {
+    await fs.mkdir(destination, { recursive: true });
 
-  const items = await fs.readdir(source);
+    const sourceFiles = await fs.readdir(source);
+    const destinationFiles = await fs.readdir(destination);
 
-  for (const item of items) {
-    await fs.copyFile(path.join(source, item), path.join(destination, item));
+    for (const file of sourceFiles) {
+      await fs.copyFile(path.join(source, file), path.join(destination, file));
+    }
+
+    for (const file of destinationFiles) {
+      if (!sourceFiles.includes(file)) {
+        await fs.unlink(path.join(destination, file));
+        console.log(`Deleted: ${file}`);
+      }
+    }
+
+    console.log('Copy completed successfully!');
+  } catch (error) {
+    console.error('Error copying files:', error.message);
   }
-
-  console.log('Copy completed successfully!');
 }
 
 copyDir();

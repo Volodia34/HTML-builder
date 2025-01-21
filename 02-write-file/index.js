@@ -25,11 +25,11 @@ rl.on('line', (input) => {
 });
 
 rl.on('close', () => {
+  console.log('Goodbye! Exiting the program.');
   writeStream.end();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('\nGoodbye! Exiting the program.');
   rl.close();
 });
